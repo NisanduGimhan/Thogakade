@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="Loadpages" prefHeight="487.0" prefWidth="945.0" style="-fx-background-color: #D5E5F2;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.login.LoginControllerForm">
+   <children>
+      <AnchorPane prefHeight="436.0" prefWidth="340.0" style="-fx-background-color: #2c3e50;" />
+      <Label layoutX="462.0" layoutY="78.0" text="Login">
+         <font>
+            <Font name="System Bold" size="30.0" />
+         </font>
+      </Label>
+      <TextField fx:id="txtName" layoutX="427.0" layoutY="192.0" promptText="User Name" />
+      <TextField fx:id="txtPassword" layoutX="427.0" layoutY="239.0" promptText="Password" />
+      <Button layoutX="473.0" layoutY="314.0" mnemonicParsing="false" onAction="#btnLoginOnAction" prefHeight="27.0" prefWidth="68.0" style="-fx-background-color: #2c3e50;" text="Login" textFill="#fff9f9">
+         <font>
+            <Font name="System Bold" size="13.0" />
+         </font></Button>
+      <Button layoutX="473.0" layoutY="361.0" mnemonicParsing="false" onAction="#btnRegisterPageLoadOnAction" style="-fx-background-color: #2c3e50;" text="Register" textFill="#fff7f7">
+         <font>
+            <Font name="System Bold" size="13.0" />
+         </font></Button>
+   </children>
+</AnchorPane>
