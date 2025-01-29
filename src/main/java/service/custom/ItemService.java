@@ -1,4 +1,4 @@
-package controller.items;
+package service.custom;
 
 import model.Item;
 

@@ -11,6 +11,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import model.Item;
+import service.custom.impl.ItemServiceimpl;
 
 import java.net.URL;
 import java.util.List;
@@ -47,7 +48,7 @@ public class ItemControllerForm implements Initializable {
 
     @FXML
     void btnAddOnAction(ActionEvent event) {
-        boolean isAdd=ItemController.getInstance().addItem(
+        boolean isAdd= ItemServiceimpl.getInstance().addItem(
                 new Item(
                         txtCode.getText(),
                         txtDescription.getText(),
@@ -66,7 +67,7 @@ public class ItemControllerForm implements Initializable {
 
     @FXML
     void btnDeleteOnAction(ActionEvent event) {
-        boolean isDelete= ItemController.getInstance().deleteItem(
+        boolean isDelete= ItemServiceimpl.getInstance().deleteItem(
                 txtCode.getText()
         );
 
@@ -81,7 +82,7 @@ public class ItemControllerForm implements Initializable {
 
     @FXML
     void btnSearchOnAction(ActionEvent event) {
-        Item item= ItemController.getInstance().searchItem(
+        Item item= ItemServiceimpl.getInstance().searchItem(
                 txtCode.getText()
         );
 
@@ -99,7 +100,7 @@ public class ItemControllerForm implements Initializable {
 
     @FXML
     void btnUpdateOnAction(ActionEvent event) {
-        boolean isUpdated= ItemController.getInstance().updateItem(
+        boolean isUpdated= ItemServiceimpl.getInstance().updateItem(
                 new Item(
                     txtCode.getText(),
                     txtDescription.getText(),
@@ -117,7 +118,7 @@ public class ItemControllerForm implements Initializable {
     }
 
     public void loadTable(){
-        List<Item> all = ItemController.getInstance().getAll();
+        List<Item> all = ItemServiceimpl.getInstance().getAll();
         ObservableList<Item> list = FXCollections.observableArrayList();
         list.addAll(all);
         tblItem.setItems(list);

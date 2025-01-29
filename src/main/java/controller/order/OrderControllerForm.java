@@ -1,8 +1,8 @@
 package controller.order;
 
 import com.jfoenix.controls.JFXTextField;
-import controller.customers.CustomerController;
-import controller.items.ItemController;
+import service.custom.impl.CustomerServiceImpl;
+import service.custom.impl.ItemServiceimpl;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -14,14 +14,14 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Duration;
-import model.Cart;
-import model.Customer;
-import model.Item;
-import model.Order;
+import model.*;
+import service.custom.impl.OrderServiceimpl;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -33,12 +33,15 @@ public class OrderControllerForm implements Initializable {
     public TextField txtName;
     public ComboBox comboBoxItem;
     public JFXTextField buyingQty;
-    public TableView tblOrders;
+    public TableView<Cart> tblOrders;
     public TableColumn colItemCode;
     public TableColumn colDescription;
     public TableColumn colQtyOnHand;
     public TableColumn colUnitPrice;
     public TableColumn colTotals;
+    public Button btnplaceOrder;
+    public Label lblNetTotal;
+    public JFXTextField txtOrderId;
     @FXML
     private Label lblDate;
 
@@ -62,12 +65,13 @@ public class OrderControllerForm implements Initializable {
 
     @FXML
     private TextField txtUnitPrice;
-    ObservableList<Cart> list = FXCollections.observableArrayList();
+    ObservableList<Cart> cartList = FXCollections.observableArrayList();
     @FXML
     void btnAddToCartOnAction(ActionEvent event) {
 
        Double total= Double.parseDouble(txtUnitPrice.getText())*Integer.parseInt(buyingQty.getText());
-        list.add( new Cart(
+
+        cartList.add( new Cart(
                 comboBoxItem.getValue().toString(),
                 txtDesc.getText(),
                 Integer.parseInt(buyingQty.getText()),
@@ -76,7 +80,12 @@ public class OrderControllerForm implements Initializable {
 
         ));
 
-        tblOrders.setItems(list);
+        tblOrders.setItems(cartList);
+        buyingQty.clear();
+
+        calcNetTotal();
+        comboBoxId.setDisable(false);
+
     }
 
 
@@ -105,20 +114,29 @@ public class OrderControllerForm implements Initializable {
     }
 
     private void loadCustomerIds(){
-        List<String> allCustomers = OrderController.getInstance().getAllCustomers();
+        List<String> allCustomers = OrderServiceimpl.getInstance().getAllCustomers();
         ObservableList<String> list = FXCollections.observableArrayList(allCustomers);
         comboBoxId.setItems(list);
 
     }
 
     private  void loadItemIds(){
-        List<String> allItems = OrderController.getInstance().getAllItems();
+        List<String> allItems = OrderServiceimpl.getInstance().getAllItems();
         ObservableList<String> list = FXCollections.observableArrayList(allItems);
         comboBoxItem.setItems(list);
+
+        comboBoxItem.getSelectionModel().selectedItemProperty().addListener(((observableValue, ooldValue, newValue) ->{
+            if (newValue!=null){
+                comboBoxId.setDisable(true);
+
+            }else {
+                comboBoxId.setDisable(false);
+            }
+        } ));
     }
     private void SetTextForFieldsWhenItSelected(String id){
 
-       Customer customer= CustomerController.getInstance().searchCustomer(id);
+       Customer customer= CustomerServiceImpl.getInstance().searchCustomer(id);
 
 
         txtName.setText(customer.getName());
@@ -130,7 +148,7 @@ public class OrderControllerForm implements Initializable {
     private void SetTextForFieldsWhenItSelectedItems(String id){
 
 
-        Item item = ItemController.getInstance().searchItem(id);
+        Item item = ItemServiceimpl.getInstance().searchItem(id);
 
 
         txtDesc.setText(item.getDescription());
@@ -167,6 +185,62 @@ public class OrderControllerForm implements Initializable {
 
         }));
     }
+    private void calcNetTotal(){
+        Double netTotal=0.0;
+
+        for (Cart tm: cartList){
+            netTotal+=tm.getTotal();
+        }
+
+        lblNetTotal.setText(netTotal.toString());
+    }
+
+    public void btnPlaceOrderOnAction(ActionEvent actionEvent) {
+        List<OrderDetails> orderDetailsList=new ArrayList<>();
+        cartList.forEach(cart -> {
+          orderDetailsList.add(new OrderDetails(
+                  txtOrderId.getText(),
+                  cart.getItemcode(),
+                  cart.getQty(),
+                  cart.getUnitPrice()
+          ))  ;
+        });
 
 
+        try {
+            boolean  isplaceorder = OrderServiceimpl.getInstance().placeorder(
+                    new Order(
+                            txtOrderId.getText(),
+                            lblDate.getText(),
+                            comboBoxId.getValue().toString(),
+                            orderDetailsList
+
+                    )
+
+            );
+            if (isplaceorder){
+                new Alert(Alert.AlertType.INFORMATION,"Order placed").show();
+            }else {
+                new Alert(Alert.AlertType.INFORMATION,"Order Not Placed").show();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+
+
+
+    }
+
+    public void btnDeleteOnActin(ActionEvent actionEvent) {
+        Cart selectedCart = tblOrders.getSelectionModel().getSelectedItem();
+        if (selectedCart != null) {
+            cartList.remove(selectedCart);
+            calcNetTotal();
+        } else {
+
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Please select an item to delete!");
+            alert.show();
+        }
+    }
 }

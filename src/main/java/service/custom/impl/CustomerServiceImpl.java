@@ -1,7 +1,8 @@
-package controller.customers;
+package service.custom.impl;
 
 import db.DBConnection;
 import model.Customer;
+import service.custom.CustomerService;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,15 +11,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomerController implements CustomerService{
-    private static  CustomerController instance;
+public class CustomerServiceImpl implements CustomerService {
+    private static CustomerServiceImpl instance;
 
-    private CustomerController(){
+    private CustomerServiceImpl(){
     }
 
-    public static CustomerController getInstance(){
+    public static CustomerServiceImpl getInstance(){
         if(instance==null){
-            instance=new CustomerController();
+            instance=new CustomerServiceImpl();
         }
         return instance;
     }

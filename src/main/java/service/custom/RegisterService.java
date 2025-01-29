@@ -1,4 +1,4 @@
-package controller.register;
+package service.custom;
 
 import model.User;
 

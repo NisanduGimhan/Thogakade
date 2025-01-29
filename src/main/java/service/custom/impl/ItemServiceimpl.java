@@ -1,7 +1,9 @@
-package controller.items;
+package service.custom.impl;
 
 import db.DBConnection;
 import model.Item;
+import model.OrderDetails;
+import service.custom.ItemService;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,16 +12,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemController implements ItemService{
-    private static ItemController instance;
+public class ItemServiceimpl implements ItemService {
+    private static ItemServiceimpl instance;
 
-    private ItemController(){
+    private ItemServiceimpl(){
 
     }
 
-    public static ItemController getInstance(){
+    public static ItemServiceimpl getInstance(){
         if (instance==null){
-            instance=new ItemController();
+            instance=new ItemServiceimpl();
         }
         return instance;
     }
@@ -134,5 +136,28 @@ public class ItemController implements ItemService{
             throw new RuntimeException(e);
         }
         return list;
+    }
+
+    public boolean updateQty(List<OrderDetails> orderD){
+        for (OrderDetails orderDetails: orderD){
+         boolean isUpdate=  updateQty(orderDetails) ;
+            if (!isUpdate){
+                return false;
+            }
+        }
+      return true;
+    }
+
+    public boolean updateQty(OrderDetails orderD){
+        Connection connection = DBConnection.getInstance().getConnection();
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE item SET qtyOnHand=qtyOnHand-? WHERE code=?");
+            preparedStatement.setInt(1,orderD.getQty());
+            preparedStatement.setString(2,orderD.getItemCode());
+            return preparedStatement.executeUpdate()>0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }

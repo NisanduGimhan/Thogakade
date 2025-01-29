@@ -1,8 +1,7 @@
-package controller.customers;
+package service.custom;
 
 import model.Customer;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface CustomerService {

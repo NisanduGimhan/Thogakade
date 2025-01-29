@@ -1,7 +1,8 @@
-package controller.register;
+package service.custom.impl;
 
 import db.DBConnection;
 import model.User;
+import service.custom.RegisterService;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,16 +10,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RegisterController implements RegisterService{
-    private static RegisterController instance;
+public class RegisterServiceimpl implements RegisterService {
+    private static RegisterServiceimpl instance;
 
     private List<User> users=new ArrayList<>();
 
-    private RegisterController(){}
+    private RegisterServiceimpl(){}
 
-    public static RegisterController getInstance(){
+    public static RegisterServiceimpl getInstance(){
         if (instance==null){
-            instance=new RegisterController();
+            instance=new RegisterServiceimpl();
         }
         return instance;
     }

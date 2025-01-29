@@ -11,6 +11,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import model.Customer;
+import service.custom.impl.CustomerServiceImpl;
 
 import java.net.URL;
 import java.util.List;
@@ -47,7 +48,7 @@ public class CustomerFormController implements Initializable {
 
     @FXML
     void btnAddOnAction(ActionEvent event) {
-      boolean  isAdd=CustomerController.getInstance().addCustomer(
+      boolean  isAdd= CustomerServiceImpl.getInstance().addCustomer(
               new Customer(
                       txtId.getText(),
                       txtName.getText(),
@@ -67,7 +68,7 @@ public class CustomerFormController implements Initializable {
     @FXML
     void btnDeleteOnAction(ActionEvent event) {
 
-        boolean idDeleted=CustomerController.getInstance().deleteCustomer(
+        boolean idDeleted= CustomerServiceImpl.getInstance().deleteCustomer(
                 txtId.getText()
         );
 
@@ -83,7 +84,7 @@ public class CustomerFormController implements Initializable {
     @FXML
     void btnSearchOnAction(ActionEvent event) {
 
-        Customer customer= CustomerController.getInstance().searchCustomer(
+        Customer customer= CustomerServiceImpl.getInstance().searchCustomer(
                 txtId.getText()
         );
 
@@ -104,7 +105,7 @@ public class CustomerFormController implements Initializable {
     @FXML
     void btnUpdateOnAction(ActionEvent event) {
 
-        boolean isUpdate=CustomerController.getInstance().updateCustomer(
+        boolean isUpdate= CustomerServiceImpl.getInstance().updateCustomer(
                 new Customer(
                         txtId.getText(),
                         txtName.getText(),
@@ -120,7 +121,7 @@ public class CustomerFormController implements Initializable {
     }
 
     private void loadTable(){
-        List<Customer> customerList = CustomerController.getInstance().getAll();
+        List<Customer> customerList = CustomerServiceImpl.getInstance().getAll();
         ObservableList<Customer> oblist = FXCollections.observableArrayList();
         oblist.addAll(customerList);
         tblCustomer.setItems(oblist);
